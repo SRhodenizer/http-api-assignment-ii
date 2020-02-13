@@ -24,19 +24,19 @@ const handleGet = (request, response, parsedUrl) => {
     jsonHandler.getUsers(request, response);
   } else
   if (parsedUrl.pathname === '/notReal') {
-    jsonHandler.getNotReal(request, response);
+    jsonHandler.getNotFound(request, response, 404);
   } else {
     jsonHandler.getNotFound(request, response, 404);
   }
 };
 
 const handlePost = (request, response, parsedUrl) => {
-    //if the post call is addUser 
+  // if the post call is addUser
   if (parsedUrl.path === '/addUser') {
-      //make the response accessible 
+    // make the response accessible
     const res = response;
-      
-      //make a body array 
+
+    // make a body array
     const body = [];
 
     // errors on bad request
@@ -60,7 +60,7 @@ const handlePost = (request, response, parsedUrl) => {
       // passes to addUser function
       jsonHandler.addUser(request, res, bodyParams);
     });
-  } 
+  }
 };
 
 const onRequest = (request, response) => {

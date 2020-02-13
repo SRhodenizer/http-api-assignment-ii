@@ -55,7 +55,7 @@ const addUser = (request, response, body) => {
     respondJSON(request, response, responseCode, responseJSON);
     return;
   }
-  // if not use the updated response code
+  // if not use the updated response code and update the list
   respondJSONMeta(request, response, responseCode);
 };
 
