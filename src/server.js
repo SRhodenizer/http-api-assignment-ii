@@ -12,7 +12,7 @@ const jsonHandler = require('./responses.js');
 const port = process.env.PORT || process.env.NODE_PORT || 3000;
 
 // handle GET requests
-const handleGet = (request, response, parsedUrl) => {
+const handleGet = (request, response, parsedUrl, method) => {
   // route to correct method based on url
   if (parsedUrl.pathname === '/style.css') {
     htmlHandler.getCSS(request, response);
@@ -21,12 +21,20 @@ const handleGet = (request, response, parsedUrl) => {
     htmlHandler.getIndex(request, response);
   } else
   if (parsedUrl.pathname === '/getUsers') {
-    jsonHandler.getUsers(request, response);
+    if (method === 'GET') {
+      jsonHandler.getUsers(request, response);
+    } else {
+      jsonHandler.getUsersMeta(request, response);
+    }
   } else
   if (parsedUrl.pathname === '/notReal') {
-    jsonHandler.getNotFound(request, response, 404);
+    if (method === 'GET') {
+      jsonHandler.getNotFound(request, response);
+    } else {
+      jsonHandler.getNotFoundMeta(request, response);
+    }
   } else {
-    jsonHandler.getNotFound(request, response, 404);
+    jsonHandler.getNotFound(request, response);
   }
 };
 
@@ -73,7 +81,7 @@ const onRequest = (request, response) => {
     handlePost(request, response, parsedUrl);
   } else {
     // handles the get request
-    handleGet(request, response, parsedUrl);
+    handleGet(request, response, parsedUrl, request.method);
   }
 };
 

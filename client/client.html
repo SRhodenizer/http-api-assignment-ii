@@ -10,7 +10,6 @@
 
         //function to parse response 
 const parseResponse = (xhr,content) =>{
- 
      //parse response (obj will be empty in a 204 updated)
      const obj = JSON.parse(xhr.response);
      console.dir(obj);
@@ -32,9 +31,9 @@ const parseResponse = (xhr,content) =>{
 };
 
 //function to handle our response
-    const handleResponse = (xhr) => {
+    const handleResponse = (xhr, parse) => {
       const content = document.querySelector('#content');
-      
+    
       //check the status code
       switch(xhr.status) {
         case 200: //success
@@ -50,12 +49,13 @@ const parseResponse = (xhr,content) =>{
            content.innerHTML = `<b>Bad Request</b>`;
            break;
         default: //any other status code
-          content.innerHTML = `Error code not implemented by client.`;
+          content.innerHTML = `<b>Resource Not Found</b>`;
           break;
       }
-        
-      //parse response 
-      parseResponse(xhr, content);
+        if(parse && xhr.status !== 204){     
+            //parse response 
+            parseResponse(xhr, content);
+        }
     };
 
     //function to send our post request
@@ -81,9 +81,9 @@ const parseResponse = (xhr,content) =>{
       xhr.setRequestHeader('Content-type','application/x-www-form-urlencoded');
       //set our requested response type in hopes of a JSON response
       xhr.setRequestHeader ('Accept', 'type/json');
-      
+        
       //set our function to handle the response
-      xhr.onload = () => handleResponse(xhr);
+      xhr.onload = () => handleResponse(xhr,true);
       
       //takes the formdata and sends it as query
       const formData = `name=${nameField.value}&age=${ageField.value}`;
@@ -112,10 +112,15 @@ const parseResponse = (xhr,content) =>{
       xhr.open(method, action);
       
       //set our requested response type in hopes of a JSON response
-      xhr.setRequestHeader ('Accept', 'type/json');
+      xhr.setRequestHeader ('Accept', 'application/json');
       
-      //set our function to handle the response
-      xhr.onload = () => handleResponse(xhr);
+        console.log(method);
+     if(method === 'get'){     
+          //set our function to handle the response
+          xhr.onload = () => handleResponse(xhr,true);
+     }else{
+         xhr.onload = () => handleResponse(xhr,false);
+     }
       //send our request with the data
       xhr.send();
     
@@ -133,17 +138,16 @@ const parseResponse = (xhr,content) =>{
       const methodField = document.querySelector('#methodSelect');
         //submit buttons 
       const getButton = document.querySelector('#getButton');
-      const addButton = document.querySelector('#addButton');
       
       //create handlers 
       const getUsers = (e) => sendGet(e, userForm);
-      const addUser = (e) => sendPost(e,nameForm);;
+      const addUser = (e) => sendPost(e,nameForm);
       const updateUrl = (e) => userForm.setAttribute('action',urlField.value);
       const updateMethod = (e) => userForm.setAttribute('method',methodField.value);
         
       //attach submit event (for clicking submit or hitting enter)
       getButton.addEventListener('click', getUsers);
-      addButton.addEventListener('submit', addUser);
+      nameForm.addEventListener('submit', addUser);
       urlField.addEventListener('change',updateUrl);
       methodField.addEventListener('change',updateMethod);
     };

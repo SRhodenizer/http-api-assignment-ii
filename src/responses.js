@@ -3,23 +3,35 @@ const users = {};
 
 // responds with a json object
 const respondJSON = (request, response, status, object) => {
-  response.writeHead(status, { 'Content-Type': 'application/json' });
+  response.writeHead(status, {
+    'Content-Type': 'application/json',
+  });
   response.write(JSON.stringify(object));
   response.end();
 };
 
 // responds without sending the json object
 const respondJSONMeta = (request, response, status) => {
-  response.writeHead(status, { 'Content-Type': 'application/json' });
+  response.writeHead(status, {
+    'Content-Type': 'application/json',
+  });
   response.end();
 };
 
 // returns user as json objects
 const getUsers = (request, response) => {
   // makes a json object with the users data
-  const responseJSON = { users };
-  // responds with it
+  const responseJSON = {
+    users,
+  };
+    // responds with it
   respondJSON(request, response, 200, responseJSON);
+};
+
+// returns user as json objects
+const getUsersMeta = (request, response) => {
+  // responds with it
+  respondJSONMeta(request, response, 200);
 };
 
 // adds a user to the users data
@@ -60,7 +72,14 @@ const addUser = (request, response, body) => {
 };
 
 const getNotFound = (request, response) => {
-  respondJSON(request, response, 404, { id: 'notFound', message: 'The page you are looking for was not found.' });
+  respondJSON(request, response, 404, {
+    id: 'notFound',
+    message: 'The page you are looking for was not found.',
+  });
+};
+
+const getNotFoundMeta = (request, response) => {
+  respondJSONMeta(request, response, 404);
 };
 
 // export methods
@@ -68,4 +87,6 @@ module.exports = {
   getUsers,
   addUser,
   getNotFound,
+  getUsersMeta,
+  getNotFoundMeta,
 };
